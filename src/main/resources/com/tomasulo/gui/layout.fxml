@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import com.tomasulo.gui.*?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.tomasulo.gui.Controller">
+    <!-- TOP CONTROL PANEL (kept minimal; main content is scrollable in center) -->
+    <top>
+        <HBox>
+            <padding>
+                <Insets top="6" right="8" bottom="6" left="8"/>
+            </padding>
+        </HBox>
+    </top>
+    <!-- CENTER: Make the full control area scrollable so all sections can be accessed when expanded -->
+    <center>
+        <ScrollPane fitToWidth="true" hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" pannable="true">
+            <content>
+                <VBox spacing="6">
+                    <padding>
+                        <Insets top="6" right="8" bottom="6" left="8"/>
+                    </padding>
+                    <children>
+                <!-- SECTION 1: Program Input -->
+                <TitledPane text="Program Input" expanded="true">
+                    <content>
+                        <VBox spacing="6">
+                            <children>
+                                <TabPane>
+                                    <tabs>
+                                        <Tab text="Program Loader" closable="false">
+                                            <content>
+                                                <VBox spacing="8" alignment="CENTER">
+                                                    <children>
+                                                        <Button text="Load Program" fx:id="loadButton" onAction="#onLoadProgram" prefWidth="180" prefHeight="32" />
+                                                        <Label text="(only .txt)"/>
+                                                    </children>
+                                                </VBox>
+                                            </content>
+                                        </Tab>
+                                        <Tab text="Program Builder" closable="false">
+                                            <content>
+                                                <VBox spacing="6">
+                                                    <children>
+                                                        <Label text="Instruction Builder" style="-fx-font-weight:bold; -fx-font-size: 12px;"/>
+                                                        <GridPane hgap="6" vgap="3">
+                                                            <columnConstraints>
+                                                                <ColumnConstraints percentWidth="35"/>
+                                                                <ColumnConstraints percentWidth="65"/>
+                                                            </columnConstraints>
+                                                            <children>
+                                                                <Label text="Opcode:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                                                                <ComboBox fx:id="opBox" GridPane.rowIndex="0" GridPane.columnIndex="1" prefWidth="160"/>
+
+                                                                <Label fx:id="destLabel" text="Dest / Rt:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                                                                <ComboBox fx:id="destBox" GridPane.rowIndex="1" GridPane.columnIndex="1" prefWidth="160"/>
+
+                                                                <Label fx:id="src1Label" text="Src1 / Rs:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                                                                <ComboBox fx:id="src1Box" GridPane.rowIndex="2" GridPane.columnIndex="1" prefWidth="160"/>
+
+                                                                <Label fx:id="src2Label" text="Src2 / Rm:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                                                                <ComboBox fx:id="src2Box" GridPane.rowIndex="3" GridPane.columnIndex="1" prefWidth="160"/>
+
+                                                                <Label fx:id="offsetLabel" text="Offset:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                                                                <TextField fx:id="offsetField" GridPane.rowIndex="4" GridPane.columnIndex="1" promptText="e.g. 0" prefWidth="140"/>
+
+                                                                <Label fx:id="baseLabel" text="Base Reg:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                                                                <ComboBox fx:id="baseRegBox" GridPane.rowIndex="5" GridPane.columnIndex="1" prefWidth="140"/>
+
+                                                                <Label fx:id="immLabel" text="Immediate / Target:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+                                                                <TextField fx:id="immTargetField" GridPane.rowIndex="6" GridPane.columnIndex="1" promptText="immediate or label/index" prefWidth="140"/>
+
+                                                                <Button text="Add Instruction" onAction="#onAddInstruction" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+                                                            </children>
+                                                        </GridPane>
+                                                    </children>
+                                                </VBox>
+                                            </content>
+                                        </Tab>
+                                    </tabs>
+                                </TabPane>
+
+                                <!-- Shared program display and action buttons used by both Loader and Builder -->
+                                <Label text="Program"/>
+                                <ListView fx:id="instructionList" prefHeight="120.0" />
+                                <HBox spacing="8">
+                                    <children>
+                                        <Button text="Delete" onAction="#onDeleteInstruction" />
+                                        <Button text="Move Up" onAction="#onMoveUp" />
+                                        <Button text="Move Down" onAction="#onMoveDown" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </content>
+                </TitledPane>
+
+                <!-- SECTION 2: Pipeline Configuration -->
+                <TitledPane text="Pipeline Configuration" expanded="false">
+                    <content>
+                        <VBox spacing="6">
+                            <children>
+                                <HBox spacing="12">
+                                    <children>
+                                        <VBox spacing="4">
+                                    <children>
+                                        <Label text="Stations &amp; Buffers" style="-fx-font-weight:bold;"/>
+                                        <GridPane hgap="6" vgap="4">
+                                            <Label text="ADD RS:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                                            <TextField fx:id="addRsField" GridPane.rowIndex="0" GridPane.columnIndex="1" promptText="e.g., 3"/>
+                                            <Label text="MUL RS:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                                            <TextField fx:id="mulRsField" GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="e.g., 2"/>
+                                            <Label text="INT RS:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                                            <TextField fx:id="intRsField" GridPane.rowIndex="2" GridPane.columnIndex="1" promptText="e.g., 2"/>
+                                            <Label text="Load Buffers:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                                            <TextField fx:id="loadBuffersField" GridPane.rowIndex="3" GridPane.columnIndex="1" promptText="e.g., 2"/>
+                                            <Label text="Store Buffers:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                                            <TextField fx:id="storeBuffersField" GridPane.rowIndex="4" GridPane.columnIndex="1" promptText="e.g., 2"/>
+                                        </GridPane>
+                                    </children>
+                                </VBox>
+                                <VBox spacing="4">
+                                    <children>
+                                        <Label text="Latencies" style="-fx-font-weight:bold;"/>
+                                        <GridPane hgap="6" vgap="4">
+                                            <Label text="ADD:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                                            <TextField fx:id="latAddField" GridPane.rowIndex="0" GridPane.columnIndex="1" promptText="e.g., 2"/>
+                                            <Label text="SUB:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                                            <TextField fx:id="latSubField" GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="e.g., 2"/>
+                                            <Label text="MUL:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                                            <TextField fx:id="latMulField" GridPane.rowIndex="2" GridPane.columnIndex="1" promptText="e.g., 10"/>
+                                            <Label text="DIV:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                                            <TextField fx:id="latDivField" GridPane.rowIndex="3" GridPane.columnIndex="1" promptText="e.g., 40"/>
+                                            <Label text="LOAD:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                                            <TextField fx:id="latLoadField" GridPane.rowIndex="4" GridPane.columnIndex="1" promptText="e.g., 2"/>
+                                            <Label text="STORE:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                                            <TextField fx:id="latStoreField" GridPane.rowIndex="5" GridPane.columnIndex="1" promptText="e.g., 2"/>
+                                            <Label text="INT:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+                                            <TextField fx:id="latIntField" GridPane.rowIndex="6" GridPane.columnIndex="1" promptText="e.g., 1"/>
+                                        </GridPane>
+                                    </children>
+                                </VBox>
+                                <VBox spacing="4">
+                                    <children>
+                                        <Label text="Cache" style="-fx-font-weight:bold;"/>
+                                        <GridPane hgap="6" vgap="4">
+                                            <Label text="Cache Size (bytes):" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                                            <TextField fx:id="cacheSizeField" GridPane.rowIndex="0" GridPane.columnIndex="1" promptText="e.g., 64"/>
+                                            <Label text="Block Size (bytes):" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                                            <TextField fx:id="cacheBlockField" GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="e.g., 8"/>
+                                            <Label text="Hit Latency:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                                            <TextField fx:id="cacheHitField" GridPane.rowIndex="2" GridPane.columnIndex="1" promptText="e.g., 1"/>
+                                            <Label text="Miss Penalty:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                                            <TextField fx:id="cacheMissField" GridPane.rowIndex="3" GridPane.columnIndex="1" promptText="e.g., 10"/>
+                                        </GridPane>
+                                    </children>
+                                </VBox>
+                                    </children>
+                                </HBox>
+                                <HBox spacing="6">
+                                    <children>
+                                        <Button text="Fill Defaults" fx:id="fillDefaultsButton" onAction="#onFillDefaults"/>
+                                        <Button text="Reset Fields" fx:id="resetFieldsButton" onAction="#onResetPipeline"/>
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </content>
+                </TitledPane>
+
+                <!-- INIT removed: Start Running will initialize architecture -->
+
+                <!-- SECTION 3: Register File Pre-Loading -->
+                <TitledPane text="Register File Pre-Loading" expanded="false">
+                    <content>
+                        <TabPane>
+                            <tabs>
+                                <Tab text="Integer Register File" closable="false">
+                                    <content>
+                                        <VBox spacing="6">
+                                            <children>
+                                                <TableView fx:id="intRegTable" prefHeight="160"/>
+                                                <HBox spacing="6">
+                                                    <children>
+                                                        <Button text="Reset Input RF" fx:id="resetIntRFButton" onAction="#onResetIntRF"/>
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </VBox>
+                                    </content>
+                                </Tab>
+                                <Tab text="Float Register File" closable="false">
+                                    <content>
+                                        <VBox spacing="6">
+                                            <children>
+                                                <TableView fx:id="fpRegTable" prefHeight="160"/>
+                                                <HBox spacing="6">
+                                                    <children>
+                                                        <Button text="Reset Float RF" fx:id="resetFpRFButton" onAction="#onResetFpRF"/>
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </VBox>
+                                    </content>
+                                </Tab>
+                            </tabs>
+                        </TabPane>
+                    </content>
+                </TitledPane>
+
+                <!-- SECTION 4: Simulation Output -->
+                <TitledPane text="Simulation Output" expanded="false">
+                    <content>
+                        <VBox spacing="6">
+                            <children>
+                                <BorderPane>
+                                    <left>
+                                        <VBox spacing="6">
+                                            <children>
+                                                <HBox spacing="6">
+                                                    <children>
+                                                        <Button text="Run" fx:id="startRunningButton" onAction="#onStartRunning"/>
+                                                        <Button text="Stop" fx:id="stopButton" onAction="#onStop" disable="true"/>
+                                                    </children>
+                                                </HBox>
+                                                <HBox spacing="6">
+                                                    <children>
+                                                        <Button text="Previous Cycle" fx:id="prevCycleButton" onAction="#onPrevCycle" disable="true"/>
+                                                        <Button text="Next Cycle" fx:id="nextCycleButton" onAction="#onNextCycle" disable="true"/>
+                                                    </children>
+                                                </HBox>
+                                                <HBox spacing="6">
+                                                    <children>
+                                                        <Button text="Reset" fx:id="resetButton" onAction="#onReset" disable="true"/>
+                                                        <Button text="Fast Forward" fx:id="fastForwardButton" onAction="#onFastForward" disable="true"/>
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </VBox>
+                                    </left>
+                                    <right>
+                                        <Label fx:id="cycleLabel" text="Cycle: 0" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                                    </right>
+                                </BorderPane>
+                                <Label text="Program"/>
+                                <TextArea fx:id="loadedProgramArea" editable="false" prefRowCount="8"/>
+                                <Label text="Event Log"/>
+                                <TextArea fx:id="eventLogArea" prefRowCount="6" wrapText="true" editable="false"/>
+                                <!-- Main tables: Tab order required by spec -->
+                                <TabPane>
+                                    <tabs>
+                                        <Tab text="Queue" closable="false">
+                                            <content>
+                                                <TableView fx:id="queueTable"/>
+                                            </content>
+                                        </Tab>
+                                        <Tab text="ADD RS" closable="false">
+                                            <content>
+                                                <TableView fx:id="addRSTable"/>
+                                            </content>
+                                        </Tab>
+                                        <Tab text="MUL RS" closable="false">
+                                            <content>
+                                                <TableView fx:id="mulRSTable"/>
+                                            </content>
+                                        </Tab>
+                                        <Tab text="INT RS" closable="false">
+                                            <content>
+                                                <TableView fx:id="intRSTable"/>
+                                            </content>
+                                        </Tab>
+                                        <Tab text="Load Buffers" closable="false">
+                                            <content>
+                                                <VBox spacing="6">
+                                                    <children>
+                                                        <TableView fx:id="loadTable"/>
+                                                        <Label text="Selected Load EA Breakdown" style="-fx-font-weight:bold;"/>
+                                                        <TextArea fx:id="cacheBreakdownArea" editable="false" prefRowCount="3" wrapText="true"/>
+                                                    </children>
+                                                </VBox>
+                                            </content>
+                                        </Tab>
+                                        <Tab text="Store Buffers" closable="false">
+                                            <content>
+                                                <TableView fx:id="storeTable"/>
+                                            </content>
+                                        </Tab>
+                                        <Tab text="Integer RF" closable="false">
+                                            <content>
+                                                <TableView fx:id="intRegView"/>
+                                            </content>
+                                        </Tab>
+                                        <Tab text="Float RF" closable="false">
+                                            <content>
+                                                <TableView fx:id="fpRegView"/>
+                                            </content>
+                                        </Tab>
+                                        <Tab text="Cache" closable="false">
+                                            <content>
+                                                <VBox spacing="6">
+                                                    <children>
+                                                        <Label text="Current Input Address" style="-fx-font-weight:bold;"/>
+                                                        <TableView fx:id="currentAddressTable" prefHeight="100.0">
+                                                            <!-- Two-row mini table for current input address (EA / Tag / Index / Offset) -->
+                                                        </TableView>
+                                                        <Label text="Cache Lines" style="-fx-font-weight:bold;"/>
+                                                        <TableView fx:id="cacheTable" prefHeight="180"/>
+                                                    </children>
+                                                </VBox>
+                                            </content>
+                                        </Tab>
+                                        <Tab text="Memory" closable="false">
+                                            <content>
+                                                <TableView fx:id="memoryTable"/>
+                                            </content>
+                                        </Tab>
+                                    </tabs>
+                                </TabPane>
+                            </children>
+                        </VBox>
+                    </content>
+                </TitledPane>
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>

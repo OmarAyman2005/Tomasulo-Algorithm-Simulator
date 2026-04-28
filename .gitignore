@@ -1,0 +1,16 @@
+# Java build
+target/
+*.class
+
+# Logs
+*.log
+
+# Output files
+*.txt
+
+# IDE
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
